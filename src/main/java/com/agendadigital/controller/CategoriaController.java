@@ -28,7 +28,7 @@ public class CategoriaController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/todos")
     public ResponseEntity<List<?>> getCategorias(@RequestParam(name = "nombre",required = false) String nombre) {
 
         try {

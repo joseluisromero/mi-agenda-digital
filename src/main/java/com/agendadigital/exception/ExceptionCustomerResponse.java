@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ExceptionResponse {
+public class ExceptionCustomerResponse {
     //private int statusCode;
     //private Date timestamp;
     private String message;

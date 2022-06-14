@@ -5,8 +5,7 @@ import com.agendadigital.entity.Categoria;
 import com.agendadigital.exception.ValidationServiceCustomer;
 import com.agendadigital.repository.CategoriaRepository;
 import com.agendadigital.service.CategoriaService;
-import com.agendadigital.util.CategoriaUtil;
-import org.slf4j.LoggerFactory;
+import com.agendadigital.util.ConversionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class CategoriaServiceImpl implements CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
     @Autowired
-    private CategoriaUtil categoriaUtil;
+    private ConversionUtil conversionUtil;
 
     @Transactional
     @Override
@@ -31,9 +30,9 @@ public class CategoriaServiceImpl implements CategoriaService {
         if (categoriaOptional.isPresent()) {
             throw  new ValidationServiceCustomer("Categoria "+categoriaDto.getNombre()+ " ya existe", HttpStatus.PRECONDITION_FAILED);
         }
-        Categoria categoria = categoriaUtil.buildCategoriaDtoToCategoria(categoriaDto);
+        Categoria categoria = conversionUtil.buildCategoriaDtoToCategoria(categoriaDto);
         categoria = categoriaRepository.save(categoria);
-        return categoriaUtil.buildCategoriaToCategoriaDto(categoria);
+        return conversionUtil.buildCategoriaToCategoriaDto(categoria);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class CategoriaServiceImpl implements CategoriaService {
         List<CategoriaDto> categoriaDtoList = new ArrayList<>();
         List<Categoria> categoriaSet = categoriaRepository.getCategoriaByNombre(nombre == null ? null : nombre);
         categoriaSet.stream().forEach(categoria -> {
-            categoriaDtoList.add(categoriaUtil.buildCategoriaToCategoriaDto(categoria));
+            categoriaDtoList.add(conversionUtil.buildCategoriaToCategoriaDto(categoria));
         });
 
         return categoriaDtoList;

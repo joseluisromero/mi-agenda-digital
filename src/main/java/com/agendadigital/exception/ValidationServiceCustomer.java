@@ -14,8 +14,8 @@ public class ValidationServiceCustomer extends RuntimeException {
         return httpStatus;
     }
 
-    public ExceptionResponse getExceptionResponse() {
-        return ExceptionResponse.builder()
+    public ExceptionCustomerResponse getExceptionResponse() {
+        return ExceptionCustomerResponse.builder()
                 .message(getLocalizedMessage())
                 .build();
     }

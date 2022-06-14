@@ -1,7 +1,7 @@
 package com.agendadigital.exception.handler;
 
 
-import com.agendadigital.exception.ExceptionResponse;
+import com.agendadigital.exception.ExceptionCustomerResponse;
 import com.agendadigital.exception.ValidationServiceCustomer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +26,8 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(ValidationServiceCustomer.class)
-    public ResponseEntity<ExceptionResponse> customExceptionHandler(ValidationServiceCustomer exception) {
-        ResponseEntity<ExceptionResponse> response = new ResponseEntity<>(exception.getExceptionResponse(), exception.getHttpStatus());
+    public ResponseEntity<ExceptionCustomerResponse> customExceptionHandler(ValidationServiceCustomer exception) {
+        ResponseEntity<ExceptionCustomerResponse> response = new ResponseEntity<>(exception.getExceptionResponse(), exception.getHttpStatus());
         return response;
     }
 
