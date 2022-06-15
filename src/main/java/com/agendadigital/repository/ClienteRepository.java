@@ -17,4 +17,10 @@ public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
 
     @Query("SELECT c FROM Cliente c WHERE (:identificacion is null or c.identificacion =: identificacion)")
     List<Cliente> getClienteByIdentificacion(@Param("identificacion") String identificacion);
+
+    //security
+    Optional<Cliente>findByUsername(String username);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+
 }

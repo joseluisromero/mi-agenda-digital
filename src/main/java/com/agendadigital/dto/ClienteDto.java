@@ -1,13 +1,19 @@
 package com.agendadigital.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClienteDto implements Serializable {
 
     private Integer idCliente;
@@ -24,4 +30,6 @@ public class ClienteDto implements Serializable {
     @NotBlank(message = "El password es obligatorio")
     private String password;
     private int estado;
+    @Builder.Default
+    private Set<String> roles = new HashSet<>();
 }
