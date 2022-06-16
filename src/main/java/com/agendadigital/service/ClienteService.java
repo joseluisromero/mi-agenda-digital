@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface ClienteService {
     ClienteDto save(ClienteDto clienteDto) throws ValidationServiceCustomer;
+    ClienteDto update(ClienteDto clienteDto) throws ValidationServiceCustomer;
 
     List<ClienteDto> getClientes(String identificacion);
 

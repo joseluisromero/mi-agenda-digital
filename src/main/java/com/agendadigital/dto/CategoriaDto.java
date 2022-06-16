@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class CategoriaDto implements Serializable {
 
     private Integer idCategoria;

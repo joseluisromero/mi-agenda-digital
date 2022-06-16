@@ -76,4 +76,15 @@ public class ClienteController {
         }
 
     }
+    @PutMapping("/actualizar")
+    public ResponseEntity<?> update(@RequestBody @Valid ClienteDto clienteDto, BindingResult bindingResult) throws ValidationServiceCustomer {
+        try {
+            if (bindingResult.hasErrors())
+                return new ResponseEntity("Campos mal puestos", HttpStatus.BAD_REQUEST);
+            ClienteDto clienteDto1 = clienteService.update(clienteDto);
+            return new ResponseEntity<ClienteDto>(clienteDto1, HttpStatus.OK);
+        } catch (DataAccessException e) {
+            return new ResponseEntity("Error: " + e.getMostSpecificCause().getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

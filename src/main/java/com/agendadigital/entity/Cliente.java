@@ -39,8 +39,10 @@ public class Cliente {
 
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "cliente_roles",joinColumns = @JoinColumn(name = "id_cliente"),
-    inverseJoinColumns = @JoinColumn(name = "id_roles"))
+    @JoinTable(name = "cliente_roles", joinColumns = @JoinColumn(name = "id_cliente"),
+            inverseJoinColumns = @JoinColumn(name = "id_roles"))
     private Set<Roles> roles = new HashSet<>();
+    //@OneToMany(mappedBy = "cliente")
+    //private Set<Agenda> agendaList = new HashSet<>();
 
 }

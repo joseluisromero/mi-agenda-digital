@@ -16,8 +16,8 @@ email varchar(64),
 estado integer default 1
 );
 
-create table agencia(
-id_agencia serial  primary key,
+create table agenda(
+id_agenda serial  primary key,
 titulo varchar(64) not null unique,
 descripcion varchar(255),
 fecha_creacion timestamp NOT NULL DEFAULT now(),
@@ -29,30 +29,34 @@ estado int default 1,
 sincronizado boolean default false,
 id_cliente integer not null,
 id_categoria integer not null,
-constraint cliente_agencia FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
-constraint categoria_agencia FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+constraint cliente_agenda FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
+constraint categoria_agenda FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
 );
+ALTER TABLE agenda ADD CONSTRAINT resctriccion_unique  UNIQUE(titulo,id_cliente);
 
 
-create table alerta_agencia(
+create table alerta_agenda(
 id_alerta serial  primary key,
 nombre varchar(64) not null,
 fecha_notifica timestamp NOT NULL DEFAULT now(),
-id_agencia integer not null,
-constraint agencia_alerta foreign key (id_agencia)  references agencia (id_agencia)
+id_agenda integer not null,
+constraint agenda_alerta foreign key (id_agenda)  references agenda (id_agenda)
 );
 
-create table backup_agencia(
+create table backup_agenda(
 id_backup serial  primary key,
 fecha_creacion timestamp NOT NULL DEFAULT now(),
-id_agencia integer not null,
-constraint agencia_backup_agencia foreign key (id_agencia)  references agencia (id_agencia)
+id_agenda integer not null,
+constraint agenda_backup_agenda foreign key (id_agenda)  references agenda (id_agenda)
 );
 
 create table roles(
 id_roles serial  primary key,
-nombre varchar(64) not null unique
+nombre varchar(64) not null unique--,
+--id_cliente integer not null,
+--constraint cliente_roles foreign key (id_cliente)  references cliente (id_cliente)
 );
+
 create table cliente_roles(
 id_cliente Integer not null,
 id_roles Integer not null,
