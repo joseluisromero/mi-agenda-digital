@@ -25,11 +25,21 @@ public class CategoriaServiceImpl implements CategoriaService {
 
     @Transactional
     @Override
-    public CategoriaDto save(CategoriaDto categoriaDto) throws ValidationServiceCustomer{
+    public CategoriaDto save(CategoriaDto categoriaDto) throws ValidationServiceCustomer {
         Optional<Categoria> categoriaOptional = categoriaRepository.findByNombre(categoriaDto.getNombre());
         if (categoriaOptional.isPresent()) {
-            throw  new ValidationServiceCustomer("Categoria "+categoriaDto.getNombre()+ " ya existe", HttpStatus.PRECONDITION_FAILED);
+            throw new ValidationServiceCustomer("Categoria " + categoriaDto.getNombre() + " ya existe", HttpStatus.PRECONDITION_FAILED);
         }
+        Categoria categoria = conversionUtil.buildCategoriaDtoToCategoria(categoriaDto);
+        categoria = categoriaRepository.save(categoria);
+        return conversionUtil.buildCategoriaToCategoriaDto(categoria);
+    }
+
+    @Transactional
+    @Override
+    public CategoriaDto update(CategoriaDto categoriaDto) throws ValidationServiceCustomer {
+        if (categoriaDto.getIdCategoria() == null)
+            throw new ValidationServiceCustomer("Categoria " + categoriaDto.getNombre() + " no existe", HttpStatus.PRECONDITION_FAILED);
         Categoria categoria = conversionUtil.buildCategoriaDtoToCategoria(categoriaDto);
         categoria = categoriaRepository.save(categoria);
         return conversionUtil.buildCategoriaToCategoriaDto(categoria);

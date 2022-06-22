@@ -8,6 +8,7 @@ import java.util.Set;
 
 public interface CategoriaService {
     CategoriaDto save(CategoriaDto categoriaDto)throws ValidationServiceCustomer;
+    CategoriaDto update(CategoriaDto categoriaDto)throws ValidationServiceCustomer;
 
     List<CategoriaDto> getCategorias(String nombre);
 }

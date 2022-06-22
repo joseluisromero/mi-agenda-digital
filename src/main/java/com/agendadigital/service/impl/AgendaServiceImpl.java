@@ -45,6 +45,8 @@ public class AgendaServiceImpl implements AgendaService {
         if (principal instanceof UserDetails) {
             userDetails = (UserDetails) principal;
         }
+        if(!userDetails.getUsername().equals(agendaDto.getClienteDto().getUsername()))
+            throw new ValidationServiceCustomer("El usuario enviado: " + agendaDto.getClienteDto().getUsername() + " con username logeado: " + userDetails.getUsername() + " no son iguales ", HttpStatus.PRECONDITION_FAILED);
         String username = userDetails.getUsername();
         Optional<Agenda> clienteOptional = agendaRepository.findByClienteUsernameAndTitulo(username, agendaDto.getTitulo());
         if (clienteOptional.isPresent()) {
@@ -82,7 +84,8 @@ public class AgendaServiceImpl implements AgendaService {
         if (!clienteOptional.isPresent()) {
             throw new ValidationServiceCustomer("La nota con titulo: " + agendaDto.getTitulo() + " no se encuentra registrada", HttpStatus.PRECONDITION_FAILED);
         }
-        Agenda agenda = modelMapper.map(agendaDto, Agenda.class);
+        //Agenda agenda = modelMapper.map(agendaDto, Agenda.class);
+        Agenda agenda = buildAgendaDtoToAgenda(agendaDto);
         if (validateAgendaUpdate(clienteOptional, agendaDto, username)) {
             agenda = agendaRepository.save(agenda);
         }
@@ -130,6 +133,10 @@ public class AgendaServiceImpl implements AgendaService {
         Categoria categoria = modelMapper.map(agendaDto.getCategoriaDto(), Categoria.class);
         agenda.setCliente(cliente);
         agenda.setCategoria(categoria);
+        agenda.getAlertaAgendaList().forEach(alertaAgenda -> {
+            alertaAgenda.setAgenda(agenda);
+            alertaAgenda.setFechaNotifica(LocalDateTime.now());
+        });
         return agenda;
     }
 

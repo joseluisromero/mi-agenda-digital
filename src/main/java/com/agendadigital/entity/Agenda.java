@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Table(name = "agenda")
@@ -39,5 +39,8 @@ public class Agenda {
     @ManyToOne
     @JoinColumn(name = "id_categoria")
     private Categoria categoria;
+    @Builder.Default
+    @OneToMany(mappedBy = "agenda", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<AlertaAgenda> alertaAgendaList = new ArrayList<>();
 
 }

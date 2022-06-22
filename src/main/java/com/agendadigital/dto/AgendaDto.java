@@ -1,5 +1,6 @@
 package com.agendadigital.dto;
 
+import com.agendadigital.entity.AlertaAgenda;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.*;
 
 @Data
 @Builder
@@ -34,4 +35,5 @@ public class AgendaDto implements Serializable {
     private Integer estado = 1;
     private ClienteDto clienteDto;
     private CategoriaDto categoriaDto;
+    private List<AlertaAgendaDto> alertaAgendaList = new ArrayList<>();
 }

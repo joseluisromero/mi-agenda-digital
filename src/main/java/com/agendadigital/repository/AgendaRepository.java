@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface AgendaRepository extends JpaRepository<Agenda, Integer> {
 
-    @Query("SELECT a FROM Agenda a  WHERE (:username is null or a.cliente.username =: username)")
+    @Query("SELECT a FROM Agenda a JOIN FETCH a.cliente c  WHERE (:username is null or a.cliente.username =: username)")
     List<Agenda> getAgendaByUsername(@Param("username") String username);
 
     @Query("SELECT a FROM Agenda a  WHERE (:titulo is null or a.titulo LIKE : titulo)")
