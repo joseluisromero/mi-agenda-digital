@@ -1,6 +1,7 @@
 package com.agendadigital.service.impl;
 
 import com.agendadigital.dto.AgendaDto;
+import com.agendadigital.dto.AgendaReporteDto;
 import com.agendadigital.dto.CategoriaDto;
 import com.agendadigital.dto.ClienteDto;
 import com.agendadigital.entity.Agenda;
@@ -24,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AgendaServiceImpl implements AgendaService {
@@ -40,14 +42,15 @@ public class AgendaServiceImpl implements AgendaService {
     @Transactional
     @Override
     public AgendaDto save(AgendaDto agendaDto) throws ValidationServiceCustomer {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        /*Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = null;
         if (principal instanceof UserDetails) {
             userDetails = (UserDetails) principal;
         }
         if(!userDetails.getUsername().equals(agendaDto.getClienteDto().getUsername()))
             throw new ValidationServiceCustomer("El usuario enviado: " + agendaDto.getClienteDto().getUsername() + " con username logeado: " + userDetails.getUsername() + " no son iguales ", HttpStatus.PRECONDITION_FAILED);
-        String username = userDetails.getUsername();
+        String username = userDetails.getUsername();*/
+        String username = agendaDto.getClienteDto().getUsername();
         Optional<Agenda> clienteOptional = agendaRepository.findByClienteUsernameAndTitulo(username, agendaDto.getTitulo());
         if (clienteOptional.isPresent()) {
             throw new ValidationServiceCustomer("La nota con titulo: " + agendaDto.getTitulo() + " con username: " + username + " ya existe", HttpStatus.PRECONDITION_FAILED);
@@ -74,12 +77,14 @@ public class AgendaServiceImpl implements AgendaService {
     public AgendaDto update(AgendaDto agendaDto) throws ValidationServiceCustomer {
         if (agendaDto.getIdAgenda() == null)
             throw new ValidationServiceCustomer("EL id de la nota debe estar presente", HttpStatus.BAD_REQUEST);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        /*Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = null;
         if (principal instanceof UserDetails) {
             userDetails = (UserDetails) principal;
         }
-        String username = userDetails.getUsername();
+        */
+        // String username = userDetails.getUsername();
+        String username = agendaDto.getClienteDto().getUsername();
         Optional<Agenda> clienteOptional = agendaRepository.findById(agendaDto.getIdAgenda());
         if (!clienteOptional.isPresent()) {
             throw new ValidationServiceCustomer("La nota con titulo: " + agendaDto.getTitulo() + " no se encuentra registrada", HttpStatus.PRECONDITION_FAILED);
@@ -94,12 +99,13 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public List<AgendaDto> getAllAgendasUsername(String username2) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        /*Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = null;
         if (principal instanceof UserDetails) {
             userDetails = (UserDetails) principal;
         }
-        String username = userDetails.getUsername();
+        String username = userDetails.getUsername();*/
+        String username = username2;
         List<AgendaDto> agendaDtoList = new ArrayList<>();
         List<Agenda> notas = agendaRepository.getAgendaByUsername(username == null ? null : username);
         notas.stream().forEach(nota -> {
@@ -110,7 +116,47 @@ public class AgendaServiceImpl implements AgendaService {
 
     @Override
     public boolean delete(Integer id) {
-        return false;
+        if (id == null)
+            throw new ValidationServiceCustomer("EL id de la nota debe estar presente", HttpStatus.BAD_REQUEST);
+
+        Optional<Agenda> clienteOptional = agendaRepository.findById(id);
+        if (!clienteOptional.isPresent()) {
+            throw new ValidationServiceCustomer("La nota no se encuentra registrada", HttpStatus.PRECONDITION_FAILED);
+        }
+        agendaRepository.delete(clienteOptional.get());
+        return true;
+    }
+
+    @Override
+    public List<AgendaReporteDto> getReporte(String username, Date init, Date end) {
+        List<Object[]> reports = agendaRepository.getReporte(username, init, end);
+        List<AgendaReporteDto> agendaReporteDtoList = new ArrayList<>();
+        reports.stream().forEach(objects -> {
+            try {
+                agendaReporteDtoList.add(buildReport(objects));
+            } catch (ParseException e) {
+
+            }
+        });
+        return agendaReporteDtoList;
+    }
+
+    @Override
+    public List<AgendaReporteDto> getReporte2(String username, String titulo) {
+        return agendaRepository.getReporte2(username);
+    }
+
+    private AgendaReporteDto buildReport(Object[] obj) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = format.parse(obj[2].toString());
+        AgendaReporteDto agendaReporteDto = new AgendaReporteDto();
+        agendaReporteDto.setTitulo(obj[0].toString());
+        agendaReporteDto.setDescripcion(obj[1].toString());
+        agendaReporteDto.setFechaCreacion(date);
+        agendaReporteDto.setCliente(obj[3].toString());
+        agendaReporteDto.setCategoria(obj[4].toString());
+
+        return agendaReporteDto;
     }
 
 

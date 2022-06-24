@@ -36,7 +36,7 @@ public class Cliente {
     private Integer estado;
     //joinColumns = @JoinColumn(name = "id_cliente") es el campo que estara  en la tabla de rompimiento
     //inverseJoinColumns = @JoinColumn(name = "id_roles") el otro  campo de la tabla de rompimiento
-
+    @Builder.Default
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "cliente_roles", joinColumns = @JoinColumn(name = "id_cliente"),

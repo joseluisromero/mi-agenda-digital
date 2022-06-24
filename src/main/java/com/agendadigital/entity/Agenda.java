@@ -1,5 +1,6 @@
 package com.agendadigital.entity;
 
+import com.agendadigital.dto.AgendaReporteDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,6 +14,25 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString(of = "idAgenda")
+
+@SqlResultSetMapping(name = "getReporte2", classes = {
+        @ConstructorResult(columns = {
+                @ColumnResult(name = "titulo", type = String.class),
+                @ColumnResult(name = "descripcion", type = String.class),
+                @ColumnResult(name = "fecha_creacion", type = Date.class),
+                @ColumnResult(name = "cliente", type = String.class),
+                @ColumnResult(name = "categoria", type = String.class)
+        },
+                targetClass = AgendaReporteDto.class
+        )
+})
+@NamedNativeQuery(name = "Agenda.getReporte2", query = "select  a.titulo ,a.descripcion ,cast(a.fecha_creacion as date)as fecha_creacion  ,(c.nombres || c.apellidos )as cliente,ctg.nombre as categoria " +
+        "             from agenda a  " +
+        "             join cliente c on (c.id_cliente=a.id_cliente) " +
+        "             join categoria ctg on (ctg.id_categoria=a.id_categoria) " +
+        "             where ( :username is null or c.username = :username )  " +
+        "             order by a.fecha_creacion desc ", resultSetMapping = "getReporte2")
+
 public class Agenda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
